@@ -1,11 +1,7 @@
 <template>
   <a-layout id="components-layout-demo-responsive">
-    <a-layout-sider
-      v-model="collapsed"
-      theme="light"
-      class="layout-sider"
-    >
-      <div class="logo"><img class="pic-logo" src="~@/assets/logo.png"></div>
+    <a-layout-sider v-model="collapsed" theme="light" class="layout-sider">
+      <div class="logo"><img class="pic-logo" src="~@/assets/logo.png" /></div>
       <a-menu class="menu-item" theme="light" mode="inline" @click="menuHandle" :default-selected-keys="['menu_1']">
         <a-menu-item :key="index" v-for="(menuInfo, index) in menu" :title="menuInfo.title">
           <a-icon :type="menuInfo.icon" />
@@ -13,20 +9,23 @@
       </a-menu>
     </a-layout-sider>
     <a-layout>
-      <a-layout-sider
-        theme="light"
-        class="sub-layout-sider"
-      >
-        <a-menu class="sub-menu-item" theme="light" mode="inline" v-model="subMenuKey" :default-selected-keys="subMenuKey">
+      <a-layout-sider theme="light" class="sub-layout-sider">
+        <a-menu
+          class="sub-menu-item"
+          theme="light"
+          mode="inline"
+          v-model="subMenuKey"
+          :default-selected-keys="subMenuKey"
+        >
           <a-menu-item :key="subIndex" v-for="(menuInfo, subIndex) in subMenu">
-          <router-link :to="{ name: menuInfo.pageName, params: menuInfo.params}">
-            <span>{{ menuInfo.title }}</span>
-          </router-link>
+            <router-link :to="{name: menuInfo.pageName, params: menuInfo.params}">
+              <span>{{ menuInfo.title }}</span>
+            </router-link>
           </a-menu-item>
         </a-menu>
       </a-layout-sider>
       <a-layout-content :style="{}">
-        <div :style="{ padding: '10px', background: '#fff', minHeight: '560px' }">
+        <div :style="{padding: '10px', background: '#fff', minHeight: '560px'}">
           <router-view />
         </div>
       </a-layout-content>
@@ -40,56 +39,61 @@ export default {
     return {
       collapsed: true,
       menu: {
-        'menu_1' : {
+        menu_1: {
           icon: 'home',
-          title: ''
+          title: '',
         },
-        'menu_2' : {
+        menu_2: {
           icon: 'setting',
-          title: ''
+          title: '',
         },
       },
       menuKey: 'menu_1',
       subMenuKey: ['subMenu_1'],
       subMenu: {},
       subMenuList: {
-        'menu_1' : {
-          'subMenu_1' : {
-            title: '爬虫抓取',
+        menu_1: {
+          subMenu_1: {
+            title: '爬虫',
             pageName: 'Worm',
-            params: {}
+            params: {},
           },
-          'subMenu_2' : {
+          subMenu_2: {
             title: '打开文件夹',
             pageName: 'FileOpenDir',
             params: {},
           },
-          'subMenu_3' : {
+          subMenu_3: {
             title: '通信',
             pageName: 'Ipc',
             params: {},
-          }
+          },
+          subMenu_4: {
+            title: '统计图表',
+            pageName: 'Charts',
+            params: {},
+          },
         },
-        'menu_2' : {
-          'subMenu_1' : {
+        menu_2: {
+          subMenu_1: {
             title: '基础设置',
             pageName: 'Setting',
             params: {},
-          }
+          },
         },
       },
-      contentPage: ''
+      contentPage: '',
     };
   },
-  mounted () {
-    this.menuHandle({key: 'menu_1'})
+  mounted() {
+    this.menuHandle({key: 'menu_1'});
   },
   methods: {
-    menuHandle (item) {
-      this.subMenu = this.subMenuList[item.key]
-      this.subMenuKey = ['subMenu_1']
-      const linkInfo = this.subMenu['subMenu_1']
-      this.$router.push({ name: linkInfo.pageName, params: linkInfo.params})
+    menuHandle(item) {
+      this.subMenu = this.subMenuList[item.key];
+      this.subMenuKey = ['subMenu_1'];
+      const linkInfo = this.subMenu['subMenu_1'];
+      this.$router.push({name: linkInfo.pageName, params: linkInfo.params});
     },
   },
 };
@@ -117,7 +121,7 @@ export default {
     }
   }
   .sub-layout-sider {
-    background-color: #FAFAFA;
+    background-color: #fafafa;
   }
   .sub-menu-item {
     .ant-menu-item {
@@ -125,20 +129,20 @@ export default {
       margin-bottom: 0px;
     }
     .ant-menu-item::after {
-      border-right: 3px solid #F2F2F2;
+      border-right: 3px solid #f2f2f2;
     }
     .ant-menu-item-selected {
-      background-color:#F2F2F2;
+      background-color: #f2f2f2;
       span {
         color: #111;
       }
     }
   }
   .sub-menu-item.ant-menu {
-    background: #FAFAFA;
+    background: #fafafa;
   }
   .sub-menu-item.ant-menu-inline {
-    border-right: 0px solid #FAFAFA;
+    border-right: 0px solid #fafafa;
   }
 }
 
