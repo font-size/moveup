@@ -55,8 +55,8 @@ export default {
       subMenuList: {
         'menu_1' : {
           'subMenu_1' : {
-            title: '上传文件到sm图床',
-            pageName: 'UploadFile',
+            title: '爬虫抓取',
+            pageName: 'Worm',
             params: {}
           },
           'subMenu_2' : {

@@ -6,12 +6,15 @@ const config = require('./config');
 const is = require('electron-is');
 const api = require('./api');
 const ipc = require('./ipc');
+const fs = require('fs');
 
 module.exports = () => {
   // 存储模块
   storage.setup();
   // 日志
   logger();
+  // 抓取目录创建
+  mkdir()
   // 自动更新
   const updateConfig = config.get('autoUpdate');
   if ((is.windows() && updateConfig.windows) || (is.macOS() && updateConfig.macOS)
@@ -23,6 +26,18 @@ module.exports = () => {
   api.setup();
   // ipc模块
   ipc.setup();
+}
+
+function mkdir() {
+  if (!fs.existsSync('shotImg')) {
+      fs.mkdirSync('shotImg');
+  }
+  if (!fs.existsSync('productImg')) {
+      fs.mkdirSync('productImg');
+  }
+  if (!fs.existsSync('webpage')) {
+      fs.mkdirSync('webpage');
+  }
 }
 
 function logger () {

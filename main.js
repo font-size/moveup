@@ -7,6 +7,7 @@ const storage = require('./electron/storage')
 const is = require('electron-is')
 const setTray = require('./electron/tray')
 
+
 // main window
 global.MAIN_WINDOW = null
 global.APP_TRAY = null;
@@ -27,7 +28,7 @@ for (let i = 0; i < process.argv.length; i++) {
 const eggConfig = electronConfig.get('egg', ENV)
 eggConfig.env = ENV
 
-if (process.mas) app.setName('electron-egg')
+if (process.mas) app.setName('moveup')
 
 async function initialize () {
   app.whenReady().then(() => {
@@ -124,5 +125,6 @@ async function startServer (options) {
   
   app.relaunch()
 }
+
 
 initialize()

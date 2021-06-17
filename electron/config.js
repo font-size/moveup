@@ -45,7 +45,7 @@ const config = {
     //titleBarStyle: 'hidden'
   },
   egg: {
-    title: 'electron-egg',
+    title: 'moveup',
     env: 'prod',
     port: 7068,
     hostname: 'localhost',

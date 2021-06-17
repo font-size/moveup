@@ -1,7 +1,7 @@
 <template>
   <div>
     <h3 :style="{ marginBottom: '16px' }">
-      demo1 打开文件夹实现
+      打开本地文件夹
     </h3>
     <a-list bordered :data-source="data">
       <a-list-item @click="openDirectry(item.id)" slot="renderItem" slot-scope="item">
@@ -17,22 +17,34 @@
 import { openDir } from '@/api/main'
 
 const data = [
+  // {
+  //   content: '【下载】目录',
+  //   id: 'download'
+  // },
+  // {
+  //   content: '【图片】目录',
+  //   id: 'picture'
+  // },
+  // {
+  //   content: '【文档】目录',
+  //   id: 'doc'
+  // },
+  // {
+  //   content: '【音乐】目录',
+  //   id: 'music'
+  // },
   {
-    content: '【下载】目录',
-    id: 'download'
+    content: '保存网页目录',
+    id: 'webpage'
   },
   {
-    content: '【图片】目录',
-    id: 'picture'
+    content: '商品图片目录',
+    id: 'productImg'
   },
   {
-    content: '【文档】目录',
-    id: 'doc'
+    content: '保存抓取截图目录',
+    id: 'shotImg'
   },
-  {
-    content: '【音乐】目录',
-    id: 'music'
-  }
 ];
 
 export default {

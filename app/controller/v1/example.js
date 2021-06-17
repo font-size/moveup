@@ -4,7 +4,6 @@ const BaseController = require('../base');
 const os = require('os');
 const fs = require('fs');
 const path = require('path');
-
 class ExampleController extends BaseController {
 
   async openLocalDir() {
@@ -14,21 +13,23 @@ class ExampleController extends BaseController {
     const id = body.id;
     const data = {};
     let dir = '';
-    switch (id) {
-      case 'download' :
+    if (id) {
+      if (id === 'download') {
         dir = os.userInfo().homedir + '/Downloads';
-        break;
-      case 'picture' :
+      } else if (id === 'picture') {
         dir = os.userInfo().homedir + '/Pictures';
-        break;
-      case 'doc' :
-        dir = os.userInfo().homedir + '/Documents';
-        break;
-      case 'music' :
-        dir = os.userInfo().homedir + '/Music';
-        break;
+      } else if (id === 'doc') {
+        dir = os.userInfo().homedir + '/Pictures';
+      } else if (id === 'music') {
+        dir = os.userInfo().homedir + '/Pictures';
+      } else if (id === 'shotImg') {
+        dir = path.resolve('', 'shotImg');
+      } else if (id === 'productImg') {
+        dir = path.resolve('', 'productImg');
+      } else if (id === 'webpage') {
+        dir = path.resolve('', 'webpage');
+      }
     }
-
     await service.example.openLocalDir(dir);
 
     self.sendSuccess(data);

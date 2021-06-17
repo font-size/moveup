@@ -1,7 +1,7 @@
 <template>
   <div>
     <h3 :style="{ marginBottom: '16px' }">
-      demo2 上传文件到sm图床实现
+      demo2 上传文件到sm图床实现 puppeteer main path
     </h3>
     <!-- dev调试时，action参数：请填写你本地完整的api地址，如：http://localhost:7068/api/v1/example/uploadFile -->
     <a-upload-dragger
