@@ -38,6 +38,9 @@ function mkdir() {
   if (!fs.existsSync('webpage')) {
       fs.mkdirSync('webpage');
   }
+  if (!fs.existsSync('webpage/images')) {
+    fs.mkdirSync('webpage/images');
+}
 }
 
 function logger () {

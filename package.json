@@ -39,7 +39,7 @@
       "installerHeaderIcon": "./build/icons/icon.ico",
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "demo"
+      "shortcutName": "moveup"
     },
     "publish": [
       {
@@ -101,6 +101,7 @@
     "egg-mock": "^3.21.0",
     "electron": "^8.4.1",
     "electron-builder": "^22.7.0",
+    "electron-rebuild": "^2.3.5",
     "eslint": "^5.13.0",
     "eslint-config-egg": "^7.1.0",
     "eslint-plugin-prettier": "^3.0.1",
@@ -120,6 +121,7 @@
     "electron-updater": "^4.3.5",
     "get-port": "^5.1.1",
     "glob": "^7.1.6",
+    "headless-chrome-crawler": "^1.8.0",
     "lodash": "^4.17.11",
     "lowdb": "^1.0.0",
     "moment": "^2.29.1",

@@ -1,7 +1,7 @@
 const { answerRenderer } = require('./index')
 const log = require('../log/index')
 const moment = require('moment');
-const screenshot = require('../puppeteer/screenshot')
+const crawler = require('../crawler/launch')
 
 
 answerRenderer('example.hello', async (msg) => {
@@ -12,14 +12,13 @@ answerRenderer('example.hello', async (msg) => {
 })
 
 // 获得截图api
-answerRenderer('example.getImg', async (msg) => {
+answerRenderer('example.getPage', async (value) => {
   const timeString = moment().format("YYYYMMDDHHmmss")
   let reply = {};
   try {
-     const result =  await screenshot(msg)
+     await crawler(value)
      reply = {
-      url: msg,
-      path: result,
+      path: 'result',
       time: timeString,
       status: 'success'
     }
