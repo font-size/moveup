@@ -54,7 +54,7 @@ export default {
       subMenuList: {
         menu_1: {
           subMenu_1: {
-            title: '爬虫',
+            title: '爬虫设置',
             pageName: 'Worm',
             params: {},
           },
@@ -64,7 +64,7 @@ export default {
             params: {},
           },
           subMenu_3: {
-            title: '通信',
+            title: '通信测试',
             pageName: 'Ipc',
             params: {},
           },

@@ -1,42 +1,73 @@
 <template>
   <div>
-   
-    <a-form :form="form" :label-col="{span: 5}" :wrapper-col="{span: 12}">
-      <a-form-item label="Behavior">
-        <a-select v-model="behavior">
-          <a-select-option :value="item.value" v-for="(item, index) in behaviors" :key="index">
-            {{ item.key }}
-          </a-select-option>
-        </a-select>
+    <a-form :label-col="{span: 4}" :wrapper-col="{span: 20}">
+      <a-form-item :wrapper-col="{span: 12}">
+        <a-button type="primary" @click="handleSubmit">
+          启动爬虫
+        </a-button>
       </a-form-item>
-      <a-form-item label="minConcurrency">
+       <a-form-item label="本次任务名称">
         <!-- v-decorator="['target', {rules: [{required: true, message: '输入目标地址'}]}]" -->
-        <a-input placeholder="并发爬取限制" />
+        <a-input v-model="form.name" placeholder="默认为当前时间戳"/>
       </a-form-item>
-      <a-form-item label="maxRequestRetries">
+      <a-form-item label="目标url">
         <!-- v-decorator="['target', {rules: [{required: true, message: '输入目标地址'}]}]" -->
-        <a-input placeholder="单个任务重试次数" />
+        <a-input v-model="form.targetUrl"/>
       </a-form-item>
-      <a-form-item label="handlePageTimeoutSecs">
+       <a-form-item label="目标dom">
         <!-- v-decorator="['target', {rules: [{required: true, message: '输入目标地址'}]}]" -->
-        <a-input placeholder="最长等待时间(S)" />
+        <a-input v-model="form.targetDom" placeholder="默认为body（支持.class,#id 选择模式）" />
       </a-form-item>
-      <a-form-item label="TargetUrl">
+       <a-form-item label="下载">
+        <a-radio-group v-model="form.downType" button-style="solid">
+          <a-radio-button value="a">
+            抓取文本和图片
+          </a-radio-button>
+          <a-radio-button value="b">
+            只抓取文本
+          </a-radio-button>
+          <a-radio-button value="c">
+            只抓取图片
+          </a-radio-button>
+        </a-radio-group>
+      </a-form-item>
+       <a-form-item label="设备">
+        <a-radio-group v-model="form.device" button-style="solid">
+          <a-radio-button value="">
+            PC
+          </a-radio-button>
+          <a-radio-button value="Nexus 7">
+            移动端
+          </a-radio-button>
+        </a-radio-group>
+      </a-form-item>
+      <a-form-item label="并发爬取限制">
         <!-- v-decorator="['target', {rules: [{required: true, message: '输入目标地址'}]}]" -->
-        <a-input v-model="targetUrl"/>
+        <a-input placeholder="并发爬取限制" v-model="form.minConcurrency" />
       </a-form-item>
-      <a-form-item label="Mode">
-        <a-select default-value="mode1" @change="changeMode">
+      <a-form-item label="单个任务重试次数">
+        <!-- v-decorator="['target', {rules: [{required: true, message: '输入目标地址'}]}]" -->
+        <a-input placeholder="单个任务重试次数" v-model="form.maxRequestRetries" />
+      </a-form-item>
+      <a-form-item label="最长等待时间(S)">
+        <!-- v-decorator="['target', {rules: [{required: true, message: '输入目标地址'}]}]" -->
+        <a-input placeholder="最长等待时间(S)" v-model="form.handlePageTimeoutSecs" />
+      </a-form-item>
+      <a-form-item label="配置">
+        <a-select v-model="form.mode">
           <a-select-option :value="item.value" v-for="(item, index) in modes" :key="index">
             {{ item.key }}
           </a-select-option>
         </a-select>
       </a-form-item>
-      <a-form-item :wrapper-col="{span: 12, offset: 5}">
-        <a-button type="primary" @click="handleSubmit">
-          启动爬虫
-        </a-button>
+       <a-form-item label="行为模式">
+        <a-select v-model="form.behavior">
+          <a-select-option :value="item.value" v-for="(item, index) in behaviors" :key="index">
+            {{ item.key }}
+          </a-select-option>
+        </a-select>
       </a-form-item>
+      
     </a-form>
   </div>
 </template>
@@ -47,8 +78,19 @@ export default {
   data() {
     return {
       action_url: process.env.VUE_APP_API_BASE_URL + '/api/v1/example/uploadFile',
-      behavior: 'news',
-      targetUrl: 'https://36kr.com/p/1273283119202821',
+      form: {
+        name: '',
+        targetUrl: 'https://36kr.com/p/1273283119202821',
+        targetDom: '',
+        downType: 'a',
+        device: '',
+        minConcurrency: '1', // 并发爬取限制
+        maxRequestRetries: '0', // 单个任务重试次数
+        handlePageTimeoutSecs: 30, // 单个任务重试次数
+        mode: 'mode1',
+        behavior: 'news',
+      },
+      
       behaviors: [
         {value: 'taobao', key: '淘宝模式'},
         {value: 'news', key: '资讯类网页抓取'},
@@ -61,7 +103,6 @@ export default {
         {value: 'mode3', key: '配置三'},
         {value: 'mode4', key: '配置四'},
       ],
-      form: this.$form.createForm(this),
     };
   },
   methods: {
@@ -103,16 +144,16 @@ export default {
       console.log('e: ', e);
     },
     handleSubmit() {
-      const value = {
-        url: this.targetUrl || 'http://www.baidu.com',
-        dom: this.targetDom || null,
-      }
+      // this.$message.success(JSON.stringify(this.form));
+      // return;
+      const value = this.form;
       const self = this;
-      if (this.behavior === 'news') {
-        this.$message.info(this.behavior + ' runing')
+      this.$message.info('开始运行')
+      if (value.behavior === 'news') {
+        const time = new Date().getTime();
         this.$callMain('example.getPage', value).then(r => {
           console.log('r: ', r);
-          self.$message.success('done');
+          self.$message.success(`抓取结束 本次任务共耗时${new Date().getTime() - time}`);
         })
       }
     },

@@ -40,8 +40,8 @@ export default {
   methods: {
     helloHandle(value) {
       const self = this;
-      this.$callMain('example.getImg', value).then(r => {
-        const msg = r.status + '' + r.time;
+      this.$callMain('example.hello', value).then(r => {
+        const msg = r;
         self.$message.info(msg);
       })
     },

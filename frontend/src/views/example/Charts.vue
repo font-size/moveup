@@ -26,15 +26,15 @@ const data = [
   //   id: 'music'
   // },
   {
-    content: '保存网页目录',
+    content: '保存文本目录',
     id: 'webpage'
   },
   {
-    content: '商品图片目录',
+    content: '下载图片目录',
     id: 'productImg'
   },
   {
-    content: '保存抓取截图目录',
+    content: '截图目录',
     id: 'shotImg'
   },
 ];

@@ -1,44 +1,46 @@
 const HCCrawler = require('headless-chrome-crawler');
 const downImg = require('./download/img')
 const writeFile = require('./fileWrite/writeFile');
+const mkdirSync = require('./mkdir/index')
+// const CSVExporter = require('headless-chrome-crawler/exporter/csv');
+// const FILE = './webpage/result.csv';
+// const exporter = new CSVExporter({
+//     file: FILE,
+//     fields: ['result.title', 'response.url', 'response.status', 'links[0]' ],
+//     separator: '\t',
+// });
 
-const CSVExporter = require('headless-chrome-crawler/exporter/csv');
-const FILE = './webpage/result.csv';
-const exporter = new CSVExporter({
-    file: FILE,
-    fields: ['result.title', 'response.url', 'response.status', 'links[0]' ],
-    separator: '\t',
-});
-
-function down(type, value) {
-    if(type ==='img') {
-        downImg(value)
-    } else if(type ==='html') {
-        downHtml(value)
-    }
-}
 
 async function launch(options) {
+    if (!options.targetUrl.trim()) {
+      return;
+    }
+    const name = options.name || new Date().getTime()
+    // const dom = options.targetDom || 'body'
+    const device = options.device || ''
     const crawler = await HCCrawler.launch({
-        evaluatePage: (() => ({
+        evaluatePage: () =>({
           title: $('title').text(),
-          txt: $('#body-content').text(),
-        })),
+          txt: $('.article-content').text(),
+          html: $('html').html(),
+          imgList: (function() {
+            const list = [];
+            $('.article-content img').each(function(index, item){
+              list.push(item.src)
+            })
+            return list
+          })()
+        }),
         // exporter,
         onSuccess: (result => {
-           console.log('result.links: ', result.result);
-        //    const articleHtml = result.result.txt;
-        writeFile('txt', result.result.txt, result.result.title)
-           if (result.links && result.links.length) {
-            //  const imgList = result.links.filter(e =>e.indexOf("img") > -1);
-            //  console.log('imgList: ', imgList);
-            //  const targetImgList = [];
-            //  imgList.forEach(img =>{
-            //      if(articleHtml.indexOf(img) > -1) {
-            //         targetImgList.push(img);
-            //      }
-            //  })
-            // down('img', imgList)
+          
+          console.log('result: ', result.result);
+           // 写入文件
+           writeFile('txt', {txt: result.result.txt, title: result.result.title, name: name})
+           writeFile('html', {txt: result.result.html, title: result.result.title, name: name})
+           // 保存图片
+           if (result.result.imgList && result.result.imgList.length >0) {
+             downImg('img', {imgList: result.result.imgList, name: name })
            }
         }),
       });
@@ -47,14 +49,19 @@ async function launch(options) {
     //   // Queue multiple requests
     //   await crawler.queue(['https://36kr.com/p/1273041915079813', 'https://36kr.com/p/1273170937802114']);
       // Queue a request with custom options
+      const shotPath = `webpage/${name}/shot/shot.png`
+      let screenshot = null;
+      if(mkdirSync(`webpage/${name}/shot/`)) {
+        screenshot = {
+          path: shotPath
+        }
+      }
       await crawler.queue({
-        url: options.url,
+        url: options.targetUrl,
+        device,
         // Emulate a tablet device
-        device: 'Nexus 7',
         // Enable screenshot by passing options
-        screenshot: {
-          path: './example.png'
-        },
+        screenshot: screenshot,
         // waitUntil: 'networkidle0'
       });
       await crawler.onIdle(); // Resolved when no queue is left

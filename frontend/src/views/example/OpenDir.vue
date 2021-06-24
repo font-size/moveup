@@ -34,17 +34,17 @@ const data = [
   //   id: 'music'
   // },
   {
-    content: '保存网页目录',
+    content: '抓取目录',
     id: 'webpage'
   },
-  {
-    content: '商品图片目录',
-    id: 'productImg'
-  },
-  {
-    content: '保存抓取截图目录',
-    id: 'shotImg'
-  },
+  // {
+  //   content: '商品图片目录',
+  //   id: 'productImg'
+  // },
+  // {
+  //   content: '保存截图目录',
+  //   id: 'shotImg'
+  // },
 ];
 
 export default {

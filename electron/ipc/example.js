@@ -11,7 +11,7 @@ answerRenderer('example.hello', async (msg) => {
   return reply
 })
 
-// 获得截图api
+// 抓取api
 answerRenderer('example.getPage', async (value) => {
   const timeString = moment().format("YYYYMMDDHHmmss")
   let reply = {};
@@ -25,6 +25,7 @@ answerRenderer('example.getPage', async (value) => {
     log(timeString, JSON.stringify(reply))
   } catch (err) {
     log(timeString, err)
+    console.log(err)
     reply.status = 'fail'
   }
  

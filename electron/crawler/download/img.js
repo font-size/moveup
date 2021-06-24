@@ -1,6 +1,7 @@
 var request = require('request')
 var fs = require('fs')
 var path = require('path')
+const URL =  require ('url');
 
 function mkdirSync(dirname) {
     if (fs.existsSync(dirname)) {
@@ -14,14 +15,16 @@ function mkdirSync(dirname) {
     return false
 }
 
-function downloadUrl(urlList) {
-    for (const url of urlList) {
-        console.log('url: ', url);
+function downImg(type, {imgList, name}) {
+    for (const url of imgList) {
         let filename =  url.split('/').pop()　　// 已原网络图片的名称命名本地图片
+        if (!mkdirSync(`./webpage/${name || new URL(url).hostname}`)) {
+            return
+        }
         request(url).pipe(
-            fs.createWriteStream(`webpage/${filename}.png`).on('close',err=>{  console.log('写入失败',err) })
+            fs.createWriteStream(`webpage/${name || new URL(url).hostname}/${filename}.png`).on('close', () =>{  console.log('img download success') })
         )  
     }
 }
 
-module.exports = downloadUrl;
+module.exports = downImg;
