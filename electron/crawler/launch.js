@@ -20,7 +20,7 @@ async function launch(options) {
     if (!(options.targetUrl.length > 0)) {
       return;
     }
-    const dom = options.targetDom || 'body'
+    // const dom = options.targetDom || 'body'
     const evaluatePage = function() {
      return {
         title: $('title').text(),
