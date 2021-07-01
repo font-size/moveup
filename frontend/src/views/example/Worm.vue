@@ -1,18 +1,23 @@
 <template>
-  <div>
-    <a-form :label-col="{span: 4}" :wrapper-col="{span: 20}">
+  <div class="container">
+    <a-form :label-col="{span: 4}" :wrapper-col="{span: 20}" class="form">
       <a-form-item :wrapper-col="{span: 12}">
         <a-button type="primary" @click="handleSubmit">
           启动爬虫
         </a-button>
       </a-form-item>
-       <a-form-item label="本次任务名称">
-        <!-- v-decorator="['target', {rules: [{required: true, message: '输入目标地址'}]}]" -->
+       <!-- <a-form-item label="本次任务名称">
         <a-input v-model="form.name" placeholder="默认为当前时间戳"/>
-      </a-form-item>
+      </a-form-item> -->
       <a-form-item label="目标url">
         <!-- v-decorator="['target', {rules: [{required: true, message: '输入目标地址'}]}]" -->
-        <a-input v-model="form.targetUrl"/>
+        <div v-for="(item, index) in form.targetUrl" :key="index" class="url-input">
+          <a-input v-model="item.value" style="width:80%"/>
+          <a-icon type="delete" class="del-icon" @click="delUrlInput(index)" v-if="form.targetUrl.length > 1"/>
+        </div>
+        <a-button type="link" @click="addNewUrlInput">
+          新增一行
+        </a-button>
       </a-form-item>
        <a-form-item label="目标dom">
         <!-- v-decorator="['target', {rules: [{required: true, message: '输入目标地址'}]}]" -->
@@ -80,7 +85,9 @@ export default {
       action_url: process.env.VUE_APP_API_BASE_URL + '/api/v1/example/uploadFile',
       form: {
         name: '',
-        targetUrl: 'https://36kr.com/p/1273283119202821',
+        targetUrl: [
+          {value: ''}
+        ],
         targetDom: '',
         downType: 'a',
         device: '',
@@ -157,7 +164,27 @@ export default {
         })
       }
     },
+    addNewUrlInput() {
+      const input = {
+        value: ''
+      }
+      this.form.targetUrl.push(input)
+    },
+    delUrlInput(index) {
+      this.form.targetUrl.splice(index, 1)
+    }
   },
 };
 </script>
-<style></style>
+<style lang="less" scoped>
+
+.container {
+  .form {
+    .url-input {
+      .del-icon {
+        padding-left: 20px;
+      }
+    }
+  }
+}
+</style>

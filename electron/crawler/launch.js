@@ -2,6 +2,7 @@ const HCCrawler = require('headless-chrome-crawler');
 const downImg = require('./download/img')
 const writeFile = require('./fileWrite/writeFile');
 const mkdirSync = require('./mkdir/index')
+const { URL } =  require( 'url');
 // const CSVExporter = require('headless-chrome-crawler/exporter/csv');
 // const FILE = './webpage/result.csv';
 // const exporter = new CSVExporter({
@@ -9,61 +10,70 @@ const mkdirSync = require('./mkdir/index')
 //     fields: ['result.title', 'response.url', 'response.status', 'links[0]' ],
 //     separator: '\t',
 // });
-
-
+function parseToDOM(str) {
+  var div = document.createElement("div");
+  if (typeof str == "string")
+      div.innerHTML = str;
+  return div.childNodes;
+}
 async function launch(options) {
-    if (!options.targetUrl.trim()) {
+    if (!(options.targetUrl.length > 0)) {
       return;
     }
-    const name = options.name || new Date().getTime()
-    // const dom = options.targetDom || 'body'
+    const dom = options.targetDom || 'body'
+    const evaluatePage = function() {
+     return {
+        title: $('title').text(),
+        txt: $('.article-content').text(),
+        dom: $('body').html(),
+        html: $('html').html(),
+        imgList: (function() {
+          const list = [];
+          $('.article-content img').each(function(index, item){
+            list.push(item.src)
+          })
+          return list
+        })()
+      }
+    };
     const device = options.device || ''
     const crawler = await HCCrawler.launch({
-        evaluatePage: () =>({
-          title: $('title').text(),
-          txt: $('.article-content').text(),
-          html: $('html').html(),
-          imgList: (function() {
-            const list = [];
-            $('.article-content img').each(function(index, item){
-              list.push(item.src)
-            })
-            return list
-          })()
-        }),
+        evaluatePage: evaluatePage,
         // exporter,
         onSuccess: (result => {
-          
-          console.log('result: ', result.result);
+          const webUrl = new URL(result.options.url);
+          const name = webUrl.hostname || index;
+          const pathName = webUrl.pathname.split('/').pop(); 
+          const downFilePath = `${name}/${pathName}`
            // 写入文件
-           writeFile('txt', {txt: result.result.txt, title: result.result.title, name: name})
-           writeFile('html', {txt: result.result.html, title: result.result.title, name: name})
+           writeFile('txt', {txt: result.result.txt, title: result.result.title, name: downFilePath})
+           writeFile('html', {txt: result.result.html, title: result.result.title, name: downFilePath})
            // 保存图片
            if (result.result.imgList && result.result.imgList.length >0) {
-             downImg('img', {imgList: result.result.imgList, name: name })
+            downImg('img', {imgList: result.result.imgList, name: downFilePath })
            }
         }),
       });
-    //   // Queue a request
-    //   await crawler.queue('https://36kr.com/p/1273193910037634');
-    //   // Queue multiple requests
-    //   await crawler.queue(['https://36kr.com/p/1273041915079813', 'https://36kr.com/p/1273170937802114']);
-      // Queue a request with custom options
-      const shotPath = `webpage/${name}/shot/shot.png`
-      let screenshot = null;
-      if(mkdirSync(`webpage/${name}/shot/`)) {
-        screenshot = {
-          path: shotPath
+   
+      const mish =  options.targetUrl.map(function(item, index) {
+        const webUrl = new URL(item.value);
+        const name = webUrl.hostname || index;
+        const pathName = webUrl.pathname.split('/').pop();
+        const shotPath = `webpage/${name}/${pathName}/screenshot/screenshot.png`
+        let screenshot = null;
+        if(mkdirSync(`webpage/${name}/${pathName}/screenshot/`)) {
+          screenshot = {
+            path: shotPath,
+            fullPage: true
+          }
         }
-      }
-      await crawler.queue({
-        url: options.targetUrl,
-        device,
-        // Emulate a tablet device
-        // Enable screenshot by passing options
-        screenshot: screenshot,
-        // waitUntil: 'networkidle0'
+        return {
+          url: item.value,
+          device,
+          screenshot: screenshot,
+        }
       });
+      await crawler.queue(mish);
       await crawler.onIdle(); // Resolved when no queue is left
       await crawler.close(); // Close the crawler
 }

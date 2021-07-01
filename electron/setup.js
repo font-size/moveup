@@ -29,18 +29,9 @@ module.exports = () => {
 }
 
 function mkdir() {
-  if (!fs.existsSync('shotImg')) {
-      fs.mkdirSync('shotImg');
-  }
-  if (!fs.existsSync('productImg')) {
-      fs.mkdirSync('productImg');
-  }
   if (!fs.existsSync('webpage')) {
       fs.mkdirSync('webpage');
   }
-  if (!fs.existsSync('webpage/images')) {
-    fs.mkdirSync('webpage/images');
-}
 }
 
 function logger () {
