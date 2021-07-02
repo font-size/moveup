@@ -65,7 +65,7 @@
           </a-select-option>
         </a-select>
       </a-form-item>
-       <a-form-item label="行为模式">
+       <a-form-item label="模式">
         <a-select v-model="form.behavior">
           <a-select-option :value="item.value" v-for="(item, index) in behaviors" :key="index">
             {{ item.key }}
@@ -95,14 +95,14 @@ export default {
         maxRequestRetries: '0', // 单个任务重试次数
         handlePageTimeoutSecs: 30, // 单个任务重试次数
         mode: 'mode1',
-        behavior: 'news',
+        behavior: '36ke',
       },
       
       behaviors: [
-        {value: 'taobao', key: '淘宝模式'},
-        {value: 'news', key: '资讯类网页抓取'},
-        {value: 'specialWord', key: '根据关键词抓取互联网页面'},
-        {value: 'screenshot', key: '网页截图'},
+        {value: 'taobao', key: '淘宝'},
+        {value: '36ke', key: '36氪'},
+        {value: 'specialWord', key: '百度搜索'},
+        {value: 'screenshot', key: '腾讯新闻'},
       ],
       modes: [
         {value: 'mode1', key: '配置一'},
@@ -156,7 +156,7 @@ export default {
       const value = this.form;
       const self = this;
       this.$message.info('开始运行')
-      if (value.behavior === 'news') {
+      if (value.behavior === '36ke') {
         const time = new Date().getTime();
         this.$callMain('example.getPage', value).then(r => {
           console.log('r: ', r);
