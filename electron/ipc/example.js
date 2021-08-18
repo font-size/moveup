@@ -1,7 +1,7 @@
 const { answerRenderer } = require('./index')
 const log = require('../log/index')
 const moment = require('moment');
-const crawler = require('../crawler/launch')
+const crawler = require('../puppeteer')
 
 
 

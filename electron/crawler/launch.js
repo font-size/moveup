@@ -8,7 +8,7 @@ const parseToDOM = require('./dom/parseToDOM'); // dom相关
 const getWebUrlPath = require('./path/webUrlPath'); // 用url设置下载文件夹路径
 
 async function launch(options) {
-    if (!(options.targetUrl.length > 0)) {
+    if (!options.targetUrl) {
       return;
     }
     // const dom = options.targetDom || 'body'
@@ -16,7 +16,7 @@ async function launch(options) {
     
     const device = options.device || ''
     const crawler = await HCCrawler.launch({
-        evaluatePage: evaluatePage,
+        evaluatePage,
         // exporter,
         onSuccess: (result => {
           const downFilePath = getWebUrlPath(result.options.url)
@@ -27,7 +27,7 @@ async function launch(options) {
               writeFile('html', {txt: result.result.html, title: result.result.title, name: downFilePath})
            } else if (options.downType === 'c') {
               // 只抓图片
-              if (result.result.imgList && result.result.imgList.length >0) {
+              if (result.result.imgList && result.result.imgList.length > 0) {
                 downImg('img', {imgList: result.result.imgList, name: downFilePath })
               }
            } else {

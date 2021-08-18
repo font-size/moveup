@@ -8,9 +8,8 @@ let ChromiumPath = path.join(app.getAppPath(), "..", ".local-chromium", "win64-8
 
 async function launch() {
     const browser = await puppeteer.launch({
-        timeout: 0,
         executablePath: ChromiumPath
     });
-    return browser.wsEndpoint();
+    return browser;
 }
 module.exports = launch
