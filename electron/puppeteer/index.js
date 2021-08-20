@@ -1,3 +1,4 @@
+const fs = require("fs")
 const initPuppeteerPool = require('./pool/index');
 
 const getWebUrlPath = require('./path/webUrlPath'); // 用url设置下载文件夹路径
@@ -10,10 +11,11 @@ const browser = initPuppeteerPool({
     // 全局只应该被初始化一次
     puppeteerArgs: {
         ignoreHTTPSErrors: true,
-        headless: false, // 是否启用无头模式页面
+        headless: true, // 是否启用无头模式页面
     },
 });
 
+// 爬虫主程序
 async function crawler(params) {
     let {targetUrl, downType, targetDom} = params;
     if(!targetUrl[0].value) return;
@@ -23,12 +25,17 @@ async function crawler(params) {
     console.log('params: ', params);
     await browser.use(async instance => {
         const page = await instance.newPage();
-        await page.setViewport({width: 1000, height: 1280});
-        await page.goto(targetUrl[0].value, {
+        ke36(page, {downType, targetDom, url: targetUrl[0].value});
+    })
+}
+
+// 36ke规则
+async function ke36(page, {url, delay = 100, downType, targetDom}) {
+    await page.setViewport({width: 1000, height: 1280});
+        await page.goto(url, {
             // waitUntil: 'networkidle2',
             timeout: 0
         });
-        // await page.click('.user-login', {clickCount: 1, delay: 1000})
         // await page.$$('.user-login')[1].click()
         await page.evaluate(() => {
             document.querySelectorAll(".user-login")[1].click()
@@ -37,28 +44,52 @@ async function crawler(params) {
         await page.evaluate(() => {
             document.querySelector(".go-pwd-phone").click()
         })
-        await page.type('.kr-passport-phone input', '18918024735', {delay: 100})
-        await page.type('.kr-passport-password input', 'zxc123',{delay: 100})
-        await page.click('.kr-passport-button', {delay: 1000})
+        await page.type('.kr-passport-phone input', '18918024735', {delay})
+        await page.type('.kr-passport-password input', 'zxc123',{delay})
+        await page.click('.kr-passport-button', {delay})
 
-        let articleList = await page.$$eval('.kr-home-flow-item .article-item-pic', function(article) {
-            let list = Array.from(article)
-            return list.map(a => a.href)
+        let header = ['标题', '主题', '作者', '时间', 'url'];
+        let titleList = []; // 标题
+        let topicList = []; // 主题
+        let authorList = []; // 作者
+        let dateList = [];// 时间
+        let articleList = []; // 文章url
+        articleList = await page.$$eval('.kr-home-flow-item .article-item-pic', function(article) {
+            return Array.from(article).map(a => a.href)
         })
-
-        console.log('articleList: ', articleList);
+        titleList = await page.$$eval('.kr-home-flow-item .title-wrapper', function(article) {
+            return Array.from(article).map(a => a.innerText)
+        })
+        topicList = await page.$$eval('.kr-home-flow-item .kr-flow-bar .kr-flow-bar-motif a', function(article) {
+            return Array.from(article).map(a => a.innerText)
+        })
+        authorList = await page.$$eval('.kr-home-flow-item .kr-flow-bar .kr-flow-bar-author', function(article) {
+            return Array.from(article).map(a => a.innerText)
+        })
+        dateList = await page.$$eval('.kr-home-flow-item .kr-flow-bar .kr-flow-bar-time', function(article) {
+            return  Array.from(article).map(a => a.innerText)
+        })
+        let xlsxList = [header];
+        for(let index = 0; index < titleList.length; index ++) {
+            let list = [];
+            list.push(titleList[index])
+            list.push(topicList[index])
+            list.push(authorList[index])
+            list.push(dateList[index])
+            list.push(articleList[index])
+            xlsxList.push(list)
+        }
+        buildXlsx(xlsxList);
         for(let i = 0; i < articleList.length; i ++) {
             if (i > 2) {
                 break;
             }
-            await downData(instance,  {targetDom, url: articleList[i], downType})
+            await downData(page,  {targetDom, url: articleList[i], downType})
         }
-    })
 }
 
-// down html/txt/img
-async function downData(browser, {targetDom, url, downType}) {
-    const page = await browser.newPage();
+// 下载 html/txt/img
+async function downData(page, {targetDom, url, downType}) {
     await page.setViewport({width: 1000, height: 1280});
     await page.goto(url, {
         waitUntil: 'networkidle2',
@@ -97,9 +128,10 @@ async function downData(browser, {targetDom, url, downType}) {
      await page.close();
 }
 
-function buildXlsx() {
-    const data = [[1, 2, 3], [true, false, null, 'sheetjs'], ['foo', 'bar', new Date('2014-02-19T14:30Z'), '0.3'], ['baz', null, 'qux']];
+// 导出 xlsx
+function buildXlsx(data) {
     var buffer = xlsx.build([{name: "mySheetName", data: data}]); // Returns a buffer   
+    fs.writeFileSync('test1.xlsx',buffer,{'flag':'w'});
 }
 
 module.exports = crawler
