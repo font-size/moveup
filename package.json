@@ -126,6 +126,7 @@
     "lodash": "^4.17.11",
     "lowdb": "^1.0.0",
     "moment": "^2.29.1",
+    "node-xlsx": "^0.17.1",
     "puppeteer": "^10.0.0",
     "semver": "^5.4.1",
     "socket.io": "^3.0.5",

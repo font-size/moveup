@@ -4,6 +4,8 @@ const getWebUrlPath = require('./path/webUrlPath'); // 用url设置下载文件�
 const downImg = require('./download/img'); // 下载图片
 const writeFile = require('./fileWrite/writeFile'); // 写入文件
 
+const xlsx = require('node-xlsx')
+
 const browser = initPuppeteerPool({
     // 全局只应该被初始化一次
     puppeteerArgs: {
@@ -62,6 +64,11 @@ async function downData(page, {targetDom, url, downType}) {
           downImg('img', {imgList: pageImgs, name: downFilePath })
         }
      }
+}
+
+function buildXlsx() {
+    const data = [[1, 2, 3], [true, false, null, 'sheetjs'], ['foo', 'bar', new Date('2014-02-19T14:30Z'), '0.3'], ['baz', null, 'qux']];
+    var buffer = xlsx.build([{name: "mySheetName", data: data}]); // Returns a buffer   
 }
 
 module.exports = crawler
