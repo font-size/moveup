@@ -3,7 +3,7 @@
     <a-form :label-col="{span: 4}" :wrapper-col="{span: 20}" class="form">
       <a-form-item :wrapper-col="{span: 12}">
         <a-button type="primary" @click="handleSubmit">
-          启动爬虫
+          启动爬虫0
         </a-button>
       </a-form-item>
        <!-- <a-form-item label="本次任务名称">
@@ -86,7 +86,7 @@ export default {
       form: {
         name: '',
         targetUrl: [
-          {value: ''}
+          {value: 'https://36kr.com/'}
         ],
         targetDom: '',
         downType: 'a',

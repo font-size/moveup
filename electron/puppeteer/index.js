@@ -10,31 +10,60 @@ const browser = initPuppeteerPool({
     // 全局只应该被初始化一次
     puppeteerArgs: {
         ignoreHTTPSErrors: true,
-        headless: true, // 是否启用无头模式页面
+        headless: false, // 是否启用无头模式页面
     },
 });
 
 async function crawler(params) {
     let {targetUrl, downType, targetDom} = params;
+    if(!targetUrl[0].value) return;
     if (!targetDom || targetDom === '') {
         targetDom = 'body'
     }
     console.log('params: ', params);
     await browser.use(async instance => {
         const page = await instance.newPage();
+        await page.setViewport({width: 1000, height: 1280});
         await page.goto(targetUrl[0].value, {
-            waitUntil: 'networkidle2',
+            // waitUntil: 'networkidle2',
+            timeout: 0
         });
+        // await page.click('.user-login', {clickCount: 1, delay: 1000})
+        // await page.$$('.user-login')[1].click()
+        await page.evaluate(() => {
+            document.querySelectorAll(".user-login")[1].click()
+        })
+        await page.waitFor(2000)
+        await page.evaluate(() => {
+            document.querySelector(".go-pwd-phone").click()
+        })
+        await page.type('.kr-passport-phone input', '18918024735', {delay: 100})
+        await page.type('.kr-passport-password input', 'zxc123',{delay: 100})
+        await page.click('.kr-passport-button', {delay: 1000})
 
-        await page.click(".user-login", {delay: 100})
-        await page.click(".go-pwd-phone", {delay: 100})
-        // const pageImgs = await page.$(targetDom).$('img');
-        // downData(page,  {targetDom, url: targetUrl[0].value, downType})
+        let articleList = await page.$$eval('.kr-home-flow-item .article-item-pic', function(article) {
+            let list = Array.from(article)
+            return list.map(a => a.href)
+        })
+
+        console.log('articleList: ', articleList);
+        for(let i = 0; i < articleList.length; i ++) {
+            if (i > 2) {
+                break;
+            }
+            await downData(instance,  {targetDom, url: articleList[i], downType})
+        }
     })
 }
 
 // down html/txt/img
-async function downData(page, {targetDom, url, downType}) {
+async function downData(browser, {targetDom, url, downType}) {
+    const page = await browser.newPage();
+    await page.setViewport({width: 1000, height: 1280});
+    await page.goto(url, {
+        waitUntil: 'networkidle2',
+        timeout: 0
+    });
     const downFilePath = getWebUrlPath(url)
     // 标题
     const pageTitle = await page.$eval("title", title => title.text);
@@ -64,6 +93,8 @@ async function downData(page, {targetDom, url, downType}) {
           downImg('img', {imgList: pageImgs, name: downFilePath })
         }
      }
+
+     await page.close();
 }
 
 function buildXlsx() {

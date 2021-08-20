@@ -122,7 +122,6 @@
     "generic-pool": "^3.8.2",
     "get-port": "^5.1.1",
     "glob": "^7.1.6",
-    "headless-chrome-crawler": "^1.8.0",
     "lodash": "^4.17.11",
     "lowdb": "^1.0.0",
     "moment": "^2.29.1",
