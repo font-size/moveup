@@ -1,10 +1,11 @@
 const launch = require('./broswer/index')
 const ke36 = require('./website/36ke')
+const taobao = require('./website/taobao')
 
 // launch params
 const puppeteerArgs = {
     ignoreHTTPSErrors: true,
-    // headless: false, // 是否启用无头模式页面
+    headless: false, // 是否启用无头模式页面
     timeout: 0,
   };
 
@@ -22,6 +23,7 @@ async function crawler(params) {
     if (params.behavior === '36ke') {
         ke36(page, {downType, targetDom, url: targetUrl[0].value});
     } else if (params.behavior === 'taobao') {
+        taobao(page, {downType, targetDom, url: targetUrl[0].value});
     }
 }
 

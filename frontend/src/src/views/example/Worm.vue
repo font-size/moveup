@@ -9,6 +9,13 @@
        <!-- <a-form-item label="本次任务名称">
         <a-input v-model="form.name" placeholder="默认为当前时间戳"/>
       </a-form-item> -->
+      <a-form-item label="模式">
+        <a-select v-model="form.behavior">
+          <a-select-option :value="item.value" v-for="(item, index) in behaviors" :key="index">
+            {{ item.key }}
+          </a-select-option>
+        </a-select>
+      </a-form-item>
       <a-form-item label="目标url">
         <!-- v-decorator="['target', {rules: [{required: true, message: '输入目标地址'}]}]" -->
         <div v-for="(item, index) in form.targetUrl" :key="index" class="url-input">
@@ -65,13 +72,7 @@
           </a-select-option>
         </a-select>
       </a-form-item>
-       <a-form-item label="模式">
-        <a-select v-model="form.behavior">
-          <a-select-option :value="item.value" v-for="(item, index) in behaviors" :key="index">
-            {{ item.key }}
-          </a-select-option>
-        </a-select>
-      </a-form-item>
+     
       
     </a-form>
   </div>
