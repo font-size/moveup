@@ -31,4 +31,10 @@ async function crawler(params) {
 
 
 
+// 导出 xlsx
+function buildXlsx(data) {
+    var buffer = xlsx.build([{name: "mySheetName", data: data}]); // Returns a buffer   
+    fs.writeFileSync('test1.xlsx',buffer,{'flag':'w'});
+}
+
 module.exports = crawler
