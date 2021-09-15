@@ -106,5 +106,9 @@ async function downData(page, {targetDom, url, downType}) {
      }
     //  await page.close();
 }
-
+// 导出 xlsx
+function buildXlsx(data) {
+    var buffer = xlsx.build([{name: "mySheetName", data: data}]); // Returns a buffer   
+    fs.writeFileSync('test1.xlsx',buffer,{'flag':'w'});
+}
 module.exports = ke36;
